@@ -1,5 +1,7 @@
 from django.db import transaction
 from django.contrib.auth.models import User
+from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import render
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -12,7 +14,7 @@ from .serializers import (
     OrdenSerializer, CustomTokenObtainPairSerializer
 )
 
-# Vista para manejar el login JWT con el serializador personalizado (claims de rol)
+# Vista para manejar el login JWT con claims personalizados de rol
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
@@ -137,9 +139,36 @@ class OrdenViewSet(viewsets.ModelViewSet):
 
         return Response({"mensaje": "¡Compra procesada con éxito!", "orden_id": orden.id}, status=status.HTTP_201_CREATED)
 
+# Vista principal del e-commerce
 def home_view(request):
-    from django.shortcuts import render
     return render(request, 'tienda/index.html')
+
+# Vista protegida: Solo accesible por Administradores (is_staff) por motivos legales y de seguridad
+@staff_member_required(login_url='/')
+def documentacion_view(request):
+    return render(request, 'tienda/documentacion.html')
+from django.http import HttpResponse
+
+# Opción 2: Manejo de Error 404 con respuesta directa (sin requerir archivo html externo)
 def custom_404_view(request, exception):
-    from django.shortcuts import render
-    return render(request, 'tienda/404.html', status=404)
+    html_content = """
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Página No Encontrada | 404</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-xl text-center max-w-md space-y-4">
+            <div class="bg-indigo-50 text-indigo-600 font-mono text-xs font-bold px-3 py-1 rounded-full w-fit mx-auto">Error 404</div>
+            <h1 class="text-2xl font-black text-slate-900">Página no encontrada</h1>
+            <p class="text-xs text-slate-500">La ruta a la que intentas acceder no existe en el sistema de la tienda de hardware.</p>
+            <a href="/" class="inline-block bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-5 py-3 rounded-xl transition shadow-md shadow-indigo-600/20">
+                Volver al Inicio
+            </a>
+        </div>
+    </body>
+    </html>
+    """
+    return HttpResponse(html_content, status=404)

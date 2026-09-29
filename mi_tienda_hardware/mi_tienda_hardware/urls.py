@@ -16,27 +16,43 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from tienda.views import CustomTokenObtainPairView, home_view
 from rest_framework_simplejwt.views import TokenRefreshView
+from tienda.views import (
+    CategoriaViewSet, ProductoViewSet, CarroViewSet, OrdenViewSet,
+    CustomTokenObtainPairView, home_view, documentacion_view, RegistroClienteView
+)
+
+# 1. Enrutador centralizado de la API REST
+router = DefaultRouter()
+router.register(r'categorias', CategoriaViewSet, basename='categoria')
+router.register(r'productos', ProductoViewSet, basename='producto')
+router.register(r'carro', CarroViewSet, basename='carro')
+router.register(r'ordenes', OrdenViewSet, basename='orden')
 
 urlpatterns = [
-    # 1. Ruta principal: Renderiza directamente tu frontend HTML con Tailwind y Rare UI
+    # 2. Vista principal del frontend HTML con Tailwind y Rare UI
     path('', home_view, name='home'),
     
-    # 2. Panel de Administración de Django (por si necesitas entrar a crear datos iniciales)
+    # 3. Vista protegida de documentación (Estrictamente para Admins / Staff)
+    path('documentacion/', documentacion_view, name='documentacion'),
+    
+    # 4. Panel de Administración de Django
     path('admin/', admin.site.urls),
     
-    # 3. Endpoints de la API REST (Conecta la app 'tienda' bajo el prefijo /api/)
-    path('api/', include('tienda.urls')),
+    # 5. Endpoints de la API REST bajo el prefijo /api/
+    path('api/', include(router.urls)),
     
-    # 4. Autenticación JWT con claims de rol personalizados (Cliente / Administrador)
+    # 6. Autenticación JWT y Registro de Clientes con RUT
     path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/auth/registro/', RegistroClienteView.as_view(), name='registro_cliente'),
     
-    # 5. Documentación interactiva Swagger / OpenAPI exigida por la rúbrica
+    # 7. Documentación interactiva Swagger / OpenAPI
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-
 ]
-hadler404 = 'tienda.views.custom_404_view'  # Manejo de errores 404 personalizado
+
+# Manejo de error 404 personalizado
+handler404 = 'tienda.views.custom_404_view'

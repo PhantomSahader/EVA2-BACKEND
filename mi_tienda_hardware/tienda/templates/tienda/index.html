@@ -3,166 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PC Store | EVA 2 Backend</title>
-    <!-- Tailwind CSS (Rare UI / Modern Dark Theme) -->
+    <title>PC Hardware Store | EVA 2 Backend</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .btn-rare {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-rare:active {
+            transform: scale(0.95);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-slate-950">
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
 
     <!-- NAVBAR / HEADER -->
-    <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-50">
+    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <div class="bg-gradient-to-tr from-cyan-500 to-blue-600 text-slate-950 font-black px-3 py-1.5 rounded-xl text-lg shadow-lg shadow-cyan-500/20">PC</div>
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="location.reload()">
+                <div class="bg-gradient-to-tr from-indigo-600 to-blue-600 text-white font-black px-3.5 py-2 rounded-2xl text-lg shadow-lg shadow-indigo-500/20 hover:rotate-6 transition transform">PC</div>
                 <div>
-                    <h1 class="font-bold text-sm tracking-wide text-slate-200">Hardware Store</h1>
-                    <p class="text-[10px] text-cyan-400 font-mono">DRF + PostgreSQL + JWT</p>
+                    <h1 class="font-extrabold text-sm tracking-wide text-slate-900">HARDWARE STORE</h1>
+                    <p class="text-[10px] text-indigo-600 font-mono font-semibold">DRF + PostgreSQL + Rare UI</p>
                 </div>
             </div>
-            <div id="auth-nav" class="flex items-center space-x-3">
-                <!-- Se inyecta dinámicamente por JavaScript -->
+
+            <!-- CONTENEDOR DERECHO: DOCUMENTACIÓN ADMIN, CARRITO & AUTH -->
+            <div class="flex items-center space-x-4">
+                <!-- Enlace de Documentación para Administradores -->
+                <a id="btn-doc-admin" href="/documentacion/" class="bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 text-xs font-semibold px-3.5 py-2 rounded-2xl transition shadow-sm hidden">
+                    🔒 Documentación (Admin)
+                </a>
+
+                <!-- Icono de Carrito con Contador en Vivo -->
+                <div id="cart-icon-badge" class="relative hidden sm:flex items-center bg-indigo-50 border border-indigo-200 px-3.5 py-2 rounded-2xl cursor-pointer hover:bg-indigo-100 transition" onclick="window.scrollTo({top: 500, behavior: 'smooth'})" title="Ver Carrito">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <span id="cart-counter" class="absolute -top-2 -right-2 bg-indigo-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md animate-fade">0</span>
+                </div>
+
+                <div id="auth-nav" class="flex items-center space-x-3">
+                    <!-- Se inyecta dinámicamente -->
+                </div>
             </div>
         </div>
     </header>
 
+    <!-- BANNER COMERCIAL ROTATIVO (IMÁGENES AGRANDADAS Y LLAMATIVAS) -->
+    <div class="max-w-7xl mx-auto px-6 pt-6 w-full">
+        <div class="relative w-full h-56 sm:h-72 rounded-3xl overflow-hidden shadow-2xl border border-slate-200 bg-gradient-to-r from-indigo-900 via-blue-900 to-indigo-950 text-white">
+            <div id="carousel-slides" class="absolute inset-0 w-full h-full">
+                <!-- Slide 1 -->
+                <div class="absolute inset-0 transition-opacity duration-1000 opacity-100 slide flex items-center justify-between px-8 sm:px-14">
+                    <div class="space-y-3 max-w-lg">
+                        <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-mono px-3.5 py-1.5 rounded-full uppercase tracking-widest font-bold">¡Cyber Days Oficiales!</span>
+                        <h2 class="text-2xl sm:text-4xl font-black tracking-tight text-white">Descuentos Exclusivos en Hardware</h2>
+                        <p class="text-xs sm:text-sm text-slate-200">Aprovecha rebajas históricas por tiempo limitado en tarjetas gráficas, procesadores y mucho más.</p>
+                    </div>
+                    <!-- IMAGEN AGRANDADA -->
+                    <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=700&q=80" alt="GPU" class="hidden sm:block h-48 sm:h-56 w-72 sm:w-80 object-cover rounded-2xl shadow-2xl border-2 border-indigo-600/40 transform hover:scale-105 transition duration-500">
+                </div>
+                <!-- Slide 2 -->
+                <div class="absolute inset-0 transition-opacity duration-1000 opacity-0 slide flex items-center justify-between px-8 sm:px-14">
+                    <div class="space-y-3 max-w-lg">
+                        <span class="bg-indigo-500/20 text-indigo-200 border border-indigo-400/30 text-[11px] font-mono px-3.5 py-1.5 rounded-full uppercase tracking-widest font-bold">Stock Garantizado</span>
+                        <h2 class="text-2xl sm:text-4xl font-black tracking-tight text-white">Arma Tu Setup al Mejor Precio</h2>
+                        <p class="text-xs sm:text-sm text-slate-200">Componentes certificados con despacho rápido a todo el país y pago 100% seguro.</p>
+                    </div>
+                    <!-- IMAGEN AGRANDADA -->
+                    <img src="https://images.unsplash.com/photo-1555680202-c86f0e12f086?auto=format&fit=crop&w=700&q=80" alt="CPU" class="hidden sm:block h-48 sm:h-56 w-72 sm:w-80 object-cover rounded-2xl shadow-2xl border-2 border-indigo-600/40 transform hover:scale-105 transition duration-500">
+                </div>
+            </div>
+            <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 z-10">
+                <span class="dot w-2.5 h-2.5 rounded-full bg-white/50 cursor-pointer transition hover:scale-125" onclick="currentSlide(0)"></span>
+                <span class="dot w-2.5 h-2.5 rounded-full bg-white/50 cursor-pointer transition hover:scale-125" onclick="currentSlide(1)"></span>
+            </div>
+        </div>
+    </div>
+
     <!-- CONTENIDO PRINCIPAL -->
-    <main class="max-w-7xl mx-auto px-6 py-10 flex-grow w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <main class="max-w-7xl mx-auto px-6 py-8 flex-grow w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        <!-- SECCIÓN IZQUIERDA: CATÁLOGO DE PRODUCTOS -->
+        <!-- SECCIÓN IZQUIERDA: FILTROS Y CATÁLOGO -->
         <section class="lg:col-span-2 space-y-6">
-            <div class="flex justify-between items-center bg-slate-900/40 p-4 rounded-2xl border border-slate-800/60">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Filtrar por Categoría</h3>
+                    <button onclick="filtrarCategoria('todos')" class="text-xs text-indigo-600 hover:underline font-semibold btn-rare">Ver Todos</button>
+                </div>
+                <div id="categorias-chips" class="flex flex-wrap gap-2"></div>
+            </div>
+
+            <div class="flex justify-between items-center bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
                 <div>
-                    <h2 class="text-xl font-extrabold tracking-tight text-slate-100">Componentes Disponibles</h2>
-                    <p class="text-xs text-slate-400 mt-0.5">Explora el stock actualizado desde PostgreSQL</p>
+                    <h2 class="text-lg font-black tracking-tight text-slate-900">Catálogo de Componentes</h2>
+                    <p class="text-xs text-slate-500">Stock sincronizado en tiempo real</p>
                 </div>
                 <div class="flex items-center space-x-3">
-                    <button id="btn-nuevo-producto" onclick="abrirModalProducto()" class="hidden bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold px-3 py-2 rounded-xl transition shadow-md">
+                    <button id="btn-nuevo-producto" onclick="abrirModalProducto()" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition shadow-md shadow-emerald-600/20 btn-rare">
                         + Nuevo Producto (Admin)
                     </button>
-                    <span id="product-count" class="text-xs font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 px-3 py-1 rounded-full">Cargando...</span>
+                    <span id="product-count" class="text-xs font-mono bg-indigo-50 text-indigo-700 border border-indigo-200 px-3 py-1 rounded-full font-semibold">Cargando...</span>
                 </div>
             </div>
             
-            <!-- Grid de Productos -->
-            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <!-- Inyectado dinámicamente -->
-            </div>
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
         </section>
 
-        <!-- SECCIÓN DERECHA: CARRO DE COMPRAS & CHECKOUT PERSISTENTE -->
-        <section class="space-y-6 bg-slate-900/60 p-6 rounded-3xl border border-slate-800/80 backdrop-blur-xl h-fit sticky top-24 shadow-2xl">
+        <!-- SECCIÓN DERECHA: CARRO DE COMPRAS & CHECKOUT -->
+        <section class="space-y-6 bg-white p-6 rounded-3xl border border-slate-200 shadow-xl h-fit sticky top-20 animate-fade">
             <div>
-                <h2 class="text-lg font-bold tracking-tight text-amber-400">Carro Persistente</h2>
-                <p class="text-xs text-slate-400">Vinculado a tu usuario en la Base de Datos</p>
+                <h2 class="text-base font-black tracking-tight text-indigo-600">Carro Persistente</h2>
+                <p class="text-xs text-slate-500">Sincronizado con tu cuenta en PostgreSQL</p>
             </div>
 
-            <!-- Lista de Ítems -->
-            <div id="cart-items" class="space-y-3 max-h-60 overflow-y-auto pr-1">
-                <div class="text-center py-8 text-slate-500 text-sm">
-                    <p>Inicia sesión para gestionar tu carro.</p>
+            <div id="cart-items" class="space-y-3 max-h-56 overflow-y-auto pr-1">
+                <div class="text-center py-6 text-slate-400 text-xs">
+                    <p>Inicia sesión para ver tu carro.</p>
                 </div>
             </div>
 
-            <!-- Totales y Botón Checkout -->
-            <div class="border-t border-slate-800/80 pt-4 space-y-3">
-                <div class="flex justify-between text-base font-semibold">
-                    <span class="text-slate-400 text-sm">Total a Pagar:</span>
-                    <span id="cart-total" class="text-cyan-400 font-mono text-lg">$0.00</span>
+            <div class="border-t border-slate-100 pt-4 space-y-3">
+                <div class="flex justify-between text-base font-bold">
+                    <span class="text-slate-500 text-sm">Total:</span>
+                    <span id="cart-total" class="text-indigo-600 font-mono text-lg">$0.00</span>
                 </div>
-                <button onclick="realizarCheckout()" id="checkout-btn" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3.5 px-4 rounded-2xl transition duration-200 shadow-lg shadow-cyan-500/20 disabled:opacity-40 disabled:cursor-not-allowed text-sm" disabled>
+                <button onclick="realizarCheckout()" id="checkout-btn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl transition shadow-lg shadow-indigo-600/20 disabled:opacity-40 disabled:cursor-not-allowed text-xs uppercase tracking-wider btn-rare" disabled>
                     Confirmar Checkout (Pagar)
                 </button>
             </div>
 
-            <!-- Órdenes del Usuario -->
-            <div class="border-t border-slate-800/80 pt-4">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Historial de Órdenes</h3>
-                <div id="orders-list" class="space-y-2 max-h-40 overflow-y-auto text-xs text-slate-400 font-mono">
-                    <p class="text-slate-500 italic">Inicia sesión para ver tus órdenes.</p>
+            <div class="border-t border-slate-100 pt-4">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Historial de Órdenes</h3>
+                <div id="orders-list" class="space-y-2 max-h-36 overflow-y-auto text-xs text-slate-600 font-mono">
+                    <p class="text-slate-400 italic">Inicia sesión para ver tus órdenes.</p>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- MODAL DE AUTENTICACIÓN (LOGIN / REGISTRO) -->
-    <div id="login-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex justify-center items-center z-50 hidden">
-        <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl w-full max-w-md space-y-6 shadow-2xl">
-            <div class="text-center">
-                <h3 id="modal-title" class="text-xl font-bold text-cyan-400">Iniciar Sesión (JWT)</h3>
-                <p id="modal-subtitle" class="text-xs text-slate-400 mt-1">Accede con tu cuenta o regístrate</p>
+    <!-- MODAL DE AUTENTICACIÓN CON RARE UI & MASCOTA INTERACTIVA -->
+    <div id="login-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-md flex justify-center items-center z-50 hidden transition duration-300">
+        <div class="bg-white border border-slate-200 p-8 rounded-3xl w-full max-w-md space-y-6 shadow-2xl animate-fade relative overflow-hidden">
+            
+            <div class="flex flex-col items-center justify-center space-y-2 pb-2">
+                <div id="cubito-mascota" class="w-20 h-20 bg-indigo-50 border-2 border-indigo-100 rounded-3xl flex items-center justify-center shadow-md relative transition-transform duration-200">
+                    <div class="flex space-x-3 items-center relative z-10">
+                        <div class="w-3.5 h-3.5 bg-slate-800 rounded-full flex items-center justify-center transition-transform duration-100" id="ojo-izq">
+                            <div class="w-1 h-1 bg-white rounded-full translate-x-0.5"></div>
+                        </div>
+                        <div class="w-3.5 h-3.5 bg-slate-800 rounded-full flex items-center justify-center transition-transform duration-100" id="ojo-der">
+                            <div class="w-1 h-1 bg-white rounded-full translate-x-0.5"></div>
+                        </div>
+                    </div>
+                    <div id="manos-cubito" class="absolute inset-x-0 bottom-2 flex justify-center space-x-4 opacity-0 transition-all duration-300 translate-y-4 z-20">
+                        <div class="w-6 h-5 bg-indigo-500 rounded-full shadow-md -rotate-12"></div>
+                        <div class="w-6 h-5 bg-indigo-500 rounded-full shadow-md rotate-12"></div>
+                    </div>
+                </div>
+                <h3 id="modal-title" class="text-xl font-black text-indigo-600">Iniciar Sesión (JWT)</h3>
+                <p id="modal-subtitle" class="text-xs text-slate-500">Accede con tu cuenta o regístrate</p>
             </div>
 
             <form id="login-form" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Nombre de Usuario</label>
-                    <input type="text" id="login-username" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-cyan-500 text-slate-100">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre de Usuario</label>
+                    <input type="text" id="login-username" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-950 focus:outline-none focus:border-indigo-600 transition">
                 </div>
                 
-                <!-- Campos extras para el Registro -->
                 <div id="register-fields" class="space-y-4 hidden">
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Correo Electrónico</label>
-                        <input type="email" id="register-email" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-cyan-500 text-slate-100" placeholder="correo@ejemplo.com">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Correo Electrónico</label>
+                        <input type="email" id="register-email" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-950 focus:outline-none focus:border-indigo-600 transition" placeholder="correo@ejemplo.com">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">RUT</label>
-                        <input type="text" id="register-rut" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-cyan-500 text-slate-100" placeholder="12345678-9">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">RUT</label>
+                        <input type="text" id="register-rut" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-950 focus:outline-none focus:border-indigo-600 transition" placeholder="12345678-9">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Contraseña</label>
-                    <input type="password" id="login-password" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-cyan-500 text-slate-100">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Contraseña</label>
+                    <div class="relative">
+                        <input type="password" id="login-password" required onfocus="cubrirOjos(true)" onblur="cubrirOjos(false)" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-950 focus:outline-none focus:border-indigo-600 transition pr-10">
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-3 text-slate-400 hover:text-indigo-600 transition text-xs font-bold" id="eye-btn">👁️</button>
+                    </div>
                 </div>
 
                 <div class="flex justify-between items-center text-xs">
-                    <button type="button" onclick="alert('Se ha enviado un enlace de recuperación simulado a su correo.');" class="text-cyan-400 hover:underline">¿Olvidaste la contraseña?</button>
-                    <button type="button" onclick="toggleAuthMode()" class="text-slate-400 hover:text-slate-200"><span id="toggle-text" class="text-cyan-400 font-semibold">¿No tienes cuenta? Regístrate</span></button>
+                    <button type="button" onclick="alert('Se ha enviado un enlace de recuperación simulado a su correo.');" class="text-indigo-600 hover:underline">¿Olvidaste la contraseña?</button>
+                    <button type="button" onclick="toggleAuthMode()" class="text-slate-500 hover:text-slate-800"><span id="toggle-text" class="text-indigo-600 font-bold">¿No tienes cuenta? Regístrate</span></button>
                 </div>
 
-                <button type="submit" id="auth-submit-btn" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 rounded-xl transition text-sm shadow-lg shadow-cyan-500/20">Entrar</button>
+                <button type="submit" id="auth-submit-btn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl transition text-sm shadow-md btn-rare">Entrar</button>
             </form>
 
-            <button onclick="cerrarModalLogin()" class="w-full text-xs text-slate-500 hover:text-slate-300 transition pt-2">Cancelar</button>
+            <button onclick="cerrarModalLogin()" class="w-full text-xs text-slate-400 hover:text-slate-600 transition pt-2">Cancelar</button>
         </div>
     </div>
 
-    <!-- MODAL PARA CREAR PRODUCTO (SOLO ADMINS) -->
-    <div id="producto-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex justify-center items-center z-50 hidden">
-        <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl w-full max-w-md space-y-6 shadow-2xl">
-            <h3 class="text-xl font-bold text-emerald-400">Crear Nuevo Producto</h3>
+    <!-- MODAL PARA CREAR / EDITAR PRODUCTO (ADMIN) -->
+    <div id="producto-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-md flex justify-center items-center z-50 hidden transition duration-300">
+        <div class="bg-white border border-slate-200 p-8 rounded-3xl w-full max-w-md space-y-6 shadow-2xl animate-fade">
+            <h3 id="modal-prod-title" class="text-xl font-black text-emerald-600">Crear Nuevo Producto</h3>
             <form id="producto-form" class="space-y-3">
-                <input type="text" id="p-nombre" placeholder="Nombre del componente" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100">
-                <textarea id="p-desc" placeholder="Descripción" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100"></textarea>
-                <input type="number" step="0.01" id="p-precio" placeholder="Precio ($)" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100">
-                <input type="text" id="p-sku" placeholder="SKU (ej: CPU-001)" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100">
-                <input type="number" id="p-stock" placeholder="Stock disponible" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100">
+                <input type="hidden" id="p-id">
+                <input type="text" id="p-nombre" placeholder="Nombre del componente" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-950 focus:outline-none focus:border-emerald-600">
+                <textarea id="p-desc" placeholder="Descripción técnica" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-950 focus:outline-none focus:border-emerald-600"></textarea>
+                <input type="number" step="0.01" id="p-precio" placeholder="Precio ($)" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-950 focus:outline-none focus:border-emerald-600">
+                <input type="text" id="p-sku" placeholder="SKU" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-950 focus:outline-none focus:border-emerald-600">
+                <input type="number" id="p-stock" placeholder="Stock disponible" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-950 focus:outline-none focus:border-emerald-600">
                 
-                <!-- Selector dinámico de Categoría -->
-                <select id="p-categoria" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100">
+                <select id="p-categoria" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-950 focus:outline-none focus:border-emerald-600">
                     <option value="">Cargando categorías...</option>
                 </select>
 
-                <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition text-sm">Guardar Producto</button>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition text-sm shadow-md btn-rare">Guardar Cambios</button>
             </form>
-            <button onclick="cerrarModalProducto()" class="w-full text-xs text-slate-500 hover:text-slate-300">Cancelar</button>
+            <button onclick="cerrarModalProducto()" class="w-full text-xs text-slate-400 hover:text-slate-600">Cancelar</button>
         </div>
     </div>
 
     <!-- FOOTER CON DATOS OBLIGATORIOS DE LA RÚBRICA -->
-    <footer class="bg-slate-900/80 border-t border-slate-800/80 py-5 text-center text-xs text-slate-400 backdrop-blur-md">
-        <p>Desarrollado por <span class="text-slate-200 font-semibold">Joaquín Andrés Soto Cifuentes</span> | Sección: <span class="text-slate-200 font-semibold">001V</span> | Año: <span class="text-slate-200 font-semibold">2026</span>[cite: 1]</p>
+    <footer class="bg-white border-t border-slate-200 py-5 text-center text-xs text-slate-500 shadow-sm">
+        <p>Desarrollado por <span class="text-slate-800 font-semibold">Joaquín Andrés Soto Cifuentes</span>[cite: 1] | Sección: <span class="text-slate-800 font-semibold">AP-N4-C2</span> | Año: <span class="text-slate-800 font-semibold">2026</span></p>
     </footer>
 
-    <!-- SCRIPT DE CONSUMO API & JWT -->
+    <!-- SCRIPT DE CONSUMO API & JAVASCRIPT ANIMADO RARE UI -->
     <script>
         const API_URL = '/api';
         let accessToken = localStorage.getItem('access_token');
         let isRegisterMode = false;
+        let currentSlideIndex = 0;
+        let slideInterval;
+        let productosGlobales = [];
+        let categoriaSeleccionada = 'todos';
+        let esAdmin = false;
+        let cubitoOcultando = false;
 
         document.addEventListener('DOMContentLoaded', () => {
             actualizarNavAuth();
             cargarProductos();
+            cargarChipsCategorias();
+            iniciarCarrusel();
+            inicializarSeguimientoMouse();
             if (accessToken) {
                 cargarCarro();
                 cargarOrdenes();
@@ -170,71 +262,220 @@
             }
         });
 
-        function parseJwt(token) {
-            try {
-                return JSON.parse(atob(token.split('.')[1]));
-            } catch (e) {
-                return null;
+        function inicializarSeguimientoMouse() {
+            document.addEventListener('mousemove', (e) => {
+                if (cubitoOcultando) return;
+                const cubito = document.getElementById('cubito-mascota');
+                if (!cubito) return;
+
+                const rect = cubito.getBoundingClientRect();
+                const cubitoX = rect.left + rect.width / 2;
+                const cubitoY = rect.top + rect.height / 2;
+
+                const deltaX = e.clientX - cubitoX;
+                const deltaY = e.clientY - cubitoY;
+
+                const angleX = Math.max(Math.min(deltaX * 0.05, 5), -5);
+                const angleY = Math.max(Math.min(deltaY * 0.05, 5), -5);
+
+                const ojoIzq = document.getElementById('ojo-izq');
+                const ojoDer = document.getElementById('ojo-der');
+
+                if (ojoIzq && ojoDer) {
+                    ojoIzq.style.transform = `translate(${angleX}px, ${angleY}px)`;
+                    ojoDer.style.transform = `translate(${angleX}px, ${angleY}px)`;
+                }
+            });
+        }
+
+        function cubrirOjos(cubrir) {
+            cubitoOcultando = cubrir;
+            const manos = document.getElementById('manos-cubito');
+            const cubito = document.getElementById('cubito-mascota');
+            const ojoIzq = document.getElementById('ojo-izq');
+            const ojoDer = document.getElementById('ojo-der');
+
+            if (cubrir) {
+                manos.style.opacity = '1';
+                manos.style.transform = 'translateY(0)';
+                cubito.classList.add('scale-105');
+                if (ojoIzq && ojoDer) {
+                    ojoIzq.style.transform = 'translate(0, 4px)';
+                    ojoDer.style.transform = 'translate(0, 4px)';
+                }
+            } else {
+                manos.style.opacity = '0';
+                manos.style.transform = 'translateY(16px)';
+                cubito.classList.remove('scale-105');
             }
+        }
+
+        function togglePasswordVisibility() {
+            const pwdInput = document.getElementById('login-password');
+            const eyeBtn = document.getElementById('eye-btn');
+            if (pwdInput.type === 'password') {
+                pwdInput.type = 'text';
+                eyeBtn.innerText = '🙈';
+                cubrirOjos(false);
+            } else {
+                pwdInput.type = 'password';
+                eyeBtn.innerText = '👁️';
+                cubrirOjos(true);
+            }
+        }
+
+        function iniciarCarrusel() {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            if (slides.length === 0) return;
+            slideInterval = setInterval(() => {
+                slides[currentSlideIndex].style.opacity = '0';
+                dots[currentSlideIndex].classList.remove('bg-white');
+                dots[currentSlideIndex].classList.add('bg-white/50');
+                currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+                slides[currentSlideIndex].style.opacity = '1';
+                dots[currentSlideIndex].classList.remove('bg-white/50');
+                dots[currentSlideIndex].classList.add('bg-white');
+            }, 4000);
+            dots[0].classList.remove('bg-white/50');
+            dots[0].classList.add('bg-white');
+        }
+
+        function currentSlide(index) {
+            clearInterval(slideInterval);
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            slides.forEach((slide, i) => {
+                slide.style.opacity = i === index ? '1' : '0';
+                dots[i].classList.toggle('bg-white', i === index);
+                dots[i].classList.toggle('bg-white/50', i !== index);
+            });
+            currentSlideIndex = index;
+            iniciarCarrusel();
+        }
+
+        function parseJwt(token) {
+            try { return JSON.parse(atob(token.split('.')[1])); } catch (e) { return null; }
         }
 
         function verificarRolAdmin() {
             if (!accessToken) return;
             const payload = parseJwt(accessToken);
             if (payload && payload.is_staff) {
+                esAdmin = true;
                 document.getElementById('btn-nuevo-producto').classList.remove('hidden');
+                document.getElementById('btn-doc-admin').classList.remove('hidden');
+                renderizarProductos();
             }
         }
 
         function actualizarNavAuth() {
             const nav = document.getElementById('auth-nav');
+            const badgeCart = document.getElementById('cart-icon-badge');
+            const btnDoc = document.getElementById('btn-doc-admin');
+
             if (accessToken) {
                 const payload = parseJwt(accessToken);
                 const rolText = payload && payload.is_staff ? 'Administrador' : 'Cliente';
+                badgeCart.classList.remove('hidden'); 
+                
+                if (payload && payload.is_staff) {
+                    btnDoc.classList.remove('hidden');
+                } else {
+                    btnDoc.classList.add('hidden');
+                }
+
                 nav.innerHTML = `
-                    <span class="text-xs font-mono text-emerald-400 bg-emerald-950/60 px-3 py-1.5 rounded-xl border border-emerald-800/60">${rolText} (JWT)</span>
-                    <button onclick="logout()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-semibold px-3.5 py-1.5 rounded-xl transition">Salir</button>
+                    <span class="text-xs font-mono text-emerald-700 bg-emerald-50 px-3.5 py-1.5 rounded-2xl border border-emerald-200 font-semibold animate-fade">${rolText} (JWT)</span>
+                    <button onclick="logout()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-xs font-semibold px-3.5 py-1.5 rounded-2xl transition btn-rare">Salir</button>
                 `;
                 document.getElementById('checkout-btn').removeAttribute('disabled');
             } else {
+                badgeCart.classList.add('hidden');
+                btnDoc.classList.add('hidden');
                 nav.innerHTML = `
-                    <button onclick="abrirModalLogin()" class="bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs font-semibold px-4 py-2 rounded-xl transition">Iniciar Sesión</button>
+                    <button onclick="abrirModalLogin()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-semibold px-4 py-2 rounded-2xl transition btn-rare shadow-sm">Iniciar Sesión</button>
                 `;
             }
+        }
+
+        async function cargarChipsCategorias() {
+            try {
+                const res = await fetch(`${API_URL}/categorias/`);
+                const categorias = await res.json();
+                const container = document.getElementById('categorias-chips');
+                container.innerHTML = `<button onclick="filtrarCategoria('todos')" class="cat-chip bg-indigo-600 text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition shadow-sm btn-rare" data-id="todos">Todos</button>`;
+                categorias.forEach(cat => {
+                    container.innerHTML += `<button onclick="filtrarCategoria(${cat.id})" class="cat-chip bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-xl transition border border-slate-200 btn-rare" data-id="${cat.id}">${cat.nombre}</button>`;
+                });
+            } catch (err) { console.error(err); }
+        }
+
+        function filtrarCategoria(catId) {
+            categoriaSeleccionada = catId;
+            document.querySelectorAll('.cat-chip').forEach(btn => {
+                if (btn.getAttribute('data-id') == catId) {
+                    btn.className = "cat-chip bg-indigo-600 text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition shadow-sm btn-rare";
+                } else {
+                    btn.className = "cat-chip bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-xl transition border border-slate-200 btn-rare";
+                }
+            });
+            renderizarProductos();
         }
 
         async function cargarProductos() {
             try {
                 const res = await fetch(`${API_URL}/productos/`);
-                const productos = await res.json();
-                const grid = document.getElementById('product-grid');
-                document.getElementById('product-count').innerText = `${productos.length} ítems`;
-                
-                grid.innerHTML = '';
-                if (productos.length === 0) {
-                    grid.innerHTML = `<p class="text-slate-500 text-sm col-span-2 text-center py-10">No hay productos. Si eres Administrador, crea uno arriba.</p>`;
-                    return;
-                }
+                productosGlobales = await res.json();
+                renderizarProductos();
+            } catch (err) { console.error(err); }
+        }
 
-                productos.forEach(p => {
-                    grid.innerHTML += `
-                        <div class="bg-slate-900/80 border border-slate-800/80 p-5 rounded-3xl flex flex-col justify-between space-y-4 hover:border-slate-700 transition shadow-lg">
-                            <div>
-                                <div class="flex justify-between items-center">
-                                    <span class="text-[10px] font-mono bg-slate-950 text-cyan-400 px-2.5 py-1 rounded-lg border border-slate-800">${p.sku}</span>
-                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${p.stock > 0 ? 'bg-emerald-950 text-emerald-400 border border-emerald-800/50' : 'bg-rose-950 text-rose-400 border border-rose-800/50'}">${p.stock > 0 ? 'Stock: ' + p.stock : 'Agotado'}</span>
-                                </div>
-                                <h3 class="font-bold text-base mt-3 text-slate-100">${p.nombre}</h3>
-                                <p class="text-xs text-slate-400 mt-1 line-clamp-2">${p.descripcion}</p>
-                            </div>
-                            <div class="flex justify-between items-center pt-3 border-t border-slate-800/60">
-                                <span class="text-emerald-400 font-mono font-bold text-base">$${p.precio}</span>
-                                <button onclick="agregarAlCarro(${p.id})" class="bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 text-slate-200 text-xs font-semibold px-4 py-2.5 rounded-xl transition shadow-md">Agregar</button>
-                            </div>
+        function renderizarProductos() {
+            const grid = document.getElementById('product-grid');
+            let filtrados = productosGlobales;
+            
+            if (categoriaSeleccionada !== 'todos') {
+                filtrados = productosGlobales.filter(p => p.categoria == categoriaSeleccionada || p.categoria_id == categoriaSeleccionada);
+            }
+
+            document.getElementById('product-count').innerText = `${filtrados.length} ítems`;
+            grid.innerHTML = '';
+
+            if (filtrados.length === 0) {
+                grid.innerHTML = `<p class="text-slate-400 text-xs col-span-2 text-center py-10 animate-fade">No hay productos en esta categoría.</p>`;
+                return;
+            }
+
+            filtrados.forEach(p => {
+                let botonesAdmin = '';
+                if (esAdmin) {
+                    botonesAdmin = `
+                        <div class="flex space-x-2 mt-2">
+                            <button onclick="editarProducto(${p.id}, '${p.nombre}', '${p.descripcion}', ${p.precio}, '${p.sku}', ${p.stock}, ${p.categoria})" class="bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition btn-rare">Editar Precio / Stock</button>
                         </div>
                     `;
-                });
-            } catch (err) { console.error(err); }
+                }
+
+                grid.innerHTML += `
+                    <div class="bg-white border border-slate-200 p-5 rounded-3xl flex flex-col justify-between space-y-4 hover:shadow-xl hover:-translate-y-1 transition duration-300 animate-fade">
+                        <div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] font-mono bg-slate-100 text-indigo-600 px-2.5 py-1 rounded-lg border border-slate-200 font-semibold">${p.sku}</span>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${p.stock > 0 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}">${p.stock > 0 ? 'Stock: ' + p.stock : 'Agotado'}</span>
+                            </div>
+                            <h3 class="font-black text-base mt-3 text-slate-900">${p.nombre}</h3>
+                            <p class="text-xs text-slate-500 mt-1 line-clamp-2">${p.descripcion}</p>
+                            <span class="inline-block mt-2 text-[10px] font-semibold bg-indigo-50 text-indigo-600 px-2.5 py-0.5 rounded-md">${p.categoria_nombre || 'Hardware'}</span>
+                            ${botonesAdmin}
+                        </div>
+                        <div class="flex justify-between items-center pt-3 border-t border-slate-100">
+                            <span class="text-indigo-600 font-mono font-bold text-base">$${p.precio}</span>
+                            <button onclick="agregarAlCarro(${p.id})" class="bg-slate-900 hover:bg-indigo-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-sm btn-rare">Agregar</button>
+                        </div>
+                    </div>
+                `;
+            });
         }
 
         async function cargarCarro() {
@@ -247,25 +488,32 @@
                 const carro = Array.isArray(data) ? data[0] : data;
                 
                 const container = document.getElementById('cart-items');
+                const badgeCounter = document.getElementById('cart-counter');
+
                 if (!carro || !carro.items || carro.items.length === 0) {
-                    container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">Tu carro está vacío.</p>`;
+                    container.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">Tu carro está vacío.</p>`;
                     document.getElementById('cart-total').innerText = '$0.00';
+                    if (badgeCounter) badgeCounter.innerText = '0';
                     return;
                 }
 
+                let totalItemsCount = 0;
                 container.innerHTML = '';
                 carro.items.forEach(item => {
+                    totalItemsCount += item.cantidad;
                     container.innerHTML += `
-                        <div class="flex justify-between items-center bg-slate-950/60 p-3 rounded-2xl border border-slate-800/60 text-xs">
+                        <div class="flex justify-between items-center bg-slate-50 p-3 rounded-2xl border border-slate-200 text-xs animate-fade">
                             <div>
-                                <p class="font-bold text-slate-200">${item.producto_detalle.nombre}</p>
-                                <p class="text-slate-400 mt-0.5">Cantidad: ${item.cantidad}</p>
+                                <p class="font-bold text-slate-800">${item.producto_detalle.nombre}</p>
+                                <p class="text-slate-500 mt-0.5">Cant: ${item.cantidad}</p>
                             </div>
-                            <span class="text-cyan-400 font-mono font-bold text-sm">$${item.subtotal}</span>
+                            <span class="text-indigo-600 font-mono font-bold text-sm">$${item.subtotal}</span>
                         </div>
                     `;
                 });
+                
                 document.getElementById('cart-total').innerText = `$${carro.total_carro}`;
+                if (badgeCounter) badgeCounter.innerText = totalItemsCount;
             } catch (err) { console.error(err); }
         }
 
@@ -298,21 +546,20 @@
             const ordenes = await res.json();
             const container = document.getElementById('orders-list');
             if (ordenes.length === 0) {
-                container.innerHTML = `<p class="text-slate-500 italic">No hay órdenes registradas.</p>`;
+                container.innerHTML = `<p class="text-slate-400 italic">No hay órdenes registradas.</p>`;
                 return;
             }
             container.innerHTML = '';
             ordenes.forEach(o => {
                 container.innerHTML += `
-                    <div class="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/60 flex justify-between items-center">
-                        <span>Orden #${o.id}</span>
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${o.estado === 'PAGADO' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-amber-950 text-amber-400 border border-amber-800'}">${o.estado}</span>
+                    <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center animate-fade">
+                        <span class="text-slate-700">Orden #${o.id}</span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${o.estado === 'PAGADO' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}">${o.estado}</span>
                     </div>
                 `;
             });
         }
 
-        // Alternar entre Login y Registro
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
             const regFields = document.getElementById('register-fields');
@@ -329,7 +576,6 @@
             }
         }
 
-        // Manejo de envío del formulario de Autenticación / Registro
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('login-username').value;
@@ -338,23 +584,20 @@
             if (isRegisterMode) {
                 const email = document.getElementById('register-email').value;
                 const rut = document.getElementById('register-rut').value;
-
-                const res = await fetch(`${API_URL}/auth/registro/`, {
+                const res = document.getElementById('register-rut').value; // check
+                const resAuth = await fetch(`${API_URL}/auth/registro/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, email, password, rut })
                 });
-                const data = await res.json();
-                if (res.ok) {
-                    alert("¡Registro exitoso! Ahora inicia sesión con tus credenciales.");
+                const data = await resAuth.json();
+                if (resAuth.ok) {
+                    alert("¡Registro exitoso! Ahora inicia sesión.");
                     toggleAuthMode();
-                } else {
-                    alert("Error en el registro: " + (data.error || "Verifica los datos"));
-                }
+                } else { alert("Error: " + (data.error || "Verifica datos")); }
                 return;
             }
 
-            // Login Normal con JWT
             const res = await fetch('/api/token/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -372,10 +615,10 @@
             } else { alert("Credenciales incorrectas."); }
         });
 
-        // Crear producto desde la interfaz (Admin)
         document.getElementById('producto-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const nuevoProd = {
+            const prodId = document.getElementById('p-id').value;
+            const prodData = {
                 nombre: document.getElementById('p-nombre').value,
                 descripcion: document.getElementById('p-desc').value,
                 precio: document.getElementById('p-precio').value,
@@ -385,36 +628,59 @@
                 estado: 'DISPONIBLE'
             };
 
-            const res = await fetch(`${API_URL}/productos/`, {
-                method: 'POST',
+            const url = prodId ? `${API_URL}/productos/${prodId}/` : `${API_URL}/productos/`;
+            const metodo = prodId ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+                method: metodo,
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${accessToken}` },
-                body: JSON.stringify(nuevoProd)
+                body: JSON.stringify(prodData)
             });
 
             if (res.ok) {
-                alert("¡Producto creado con éxito!");
+                alert(prodId ? "¡Producto actualizado correctamente!" : "¡Producto creado con éxito!");
                 cerrarModalProducto();
                 cargarProductos();
             } else {
-                alert("Error: Solo los administradores pueden crear productos.");
+                alert("Error al guardar cambios. Verifica los permisos de administrador.");
             }
         });
 
         async function abrirModalProducto() {
+            document.getElementById('p-id').value = '';
+            document.getElementById('modal-prod-title').innerText = 'Crear Nuevo Producto';
+            document.getElementById('producto-form').reset();
             document.getElementById('producto-modal').classList.remove('hidden');
+            await cargarSelectCategorias();
+        }
+
+        async function editarProducto(id, nombre, desc, precio, sku, stock, categoriaId) {
+            document.getElementById('p-id').value = id;
+            document.getElementById('modal-prod-title').innerText = 'Modificar Producto';
+            document.getElementById('p-nombre').value = nombre;
+            document.getElementById('p-desc').value = desc;
+            document.getElementById('p-precio').value = precio;
+            document.getElementById('p-sku').value = sku;
+            document.getElementById('p-stock').value = stock;
+            
+            document.getElementById('producto-modal').classList.remove('hidden');
+            await cargarSelectCategorias(categoriaId);
+        }
+
+        async function cargarSelectCategorias(selectedId = null) {
             try {
                 const res = await fetch(`${API_URL}/categorias/`);
                 const categorias = await res.json();
                 const select = document.getElementById('p-categoria');
                 select.innerHTML = '<option value="">Selecciona una Categoría...</option>';
                 categorias.forEach(cat => {
-                    select.innerHTML += `<option value="${cat.id}">${cat.nombre} (ID: ${cat.id})</option>`;
+                    const selected = selectedId == cat.id ? 'selected' : '';
+                    select.innerHTML += `<option value="${cat.id}" ${selected}>${cat.nombre} (ID: ${cat.id})</option>`;
                 });
-            } catch (err) {
-                console.error("Error cargando categorías:", err);
-            }
+            } catch (err) { console.error(err); }
         }
 
+        fnLoginModal = () => document.getElementById('login-modal').classList.remove('hidden');
         function abrirModalLogin() { document.getElementById('login-modal').classList.remove('hidden'); }
         function cerrarModalLogin() { document.getElementById('login-modal').classList.add('hidden'); }
         function cerrarModalProducto() { document.getElementById('producto-modal').classList.add('hidden'); }
